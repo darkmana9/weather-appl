@@ -1,0 +1,37 @@
+import React from "react";
+import {Button} from "semantic-ui-react";
+import moment from 'moment'
+import {Card, CardBlock, CardBody, CardElement, CardHeader, CardHeaderInput} from "./components"
+import {useState} from "react"
+
+export const Weather = ({weatherData, onUpdateData, onUpdateDataByCity}) => {
+
+    const [inputValue, setInputValue] = useState(weatherData.name)
+
+    const handleInputChange = (e) => {
+        setInputValue(e.currentTarget.value)
+    }
+    return (
+        <Card>
+            <CardHeader>
+                <CardHeaderInput type='text' value={inputValue} onChange={handleInputChange}/>
+                <Button onClick={event => onUpdateDataByCity(inputValue)}>Find</Button>
+                <Button className="button" inverted color='red' circular icon='refresh' onClick={onUpdateData}/>
+            </CardHeader>
+            <CardBody>
+                <CardBlock>
+                    <CardElement>Weather: {weatherData.weather[0].description}</CardElement>
+                    <CardElement>Temp: {(weatherData.main.temp - 273.15).toFixed(2)} &deg;C</CardElement>
+                </CardBlock>
+                <CardBlock>
+                    <CardElement>Sunrise: {new Date(weatherData.sys.sunrise * 1000).toLocaleTimeString('en-IN')}</CardElement>
+                    <CardElement>Sunset: {new Date(weatherData.sys.sunset * 1000).toLocaleTimeString('en-IN')}</CardElement>
+                </CardBlock>
+                <CardBlock>
+                    <CardElement>Day: {moment().format('dddd')}</CardElement>
+                    <CardElement>Date: {moment().format('LL')}</CardElement>
+                </CardBlock>
+            </CardBody>
+        </Card>
+    )
+}
