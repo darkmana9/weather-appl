@@ -1,5 +1,7 @@
 import React from 'react'
-import {useState, useEffect, useRef, useCallback} from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { Dimmer, Loader } from "semantic-ui-react";
+import { toast, ToastContainer } from "react-toastify";
 
 import {getWeather, getWeatherByCity} from '../../API'
 import {Weather} from "../../components/weather";
@@ -18,11 +20,16 @@ export const Home = () => {
         })
     }, [])
 
-    const handleUpdateDataByCity = useCallback((city) => {
-        getWeatherByCity(city)
-            .then((response) => {
-                setWeatherData(undefined)
-                return response
+    const setWeather = useCallback((lat, long, city) => {
+        return getWeather(lat, long, city)
+            .then(response => response.data)
+            .then(data => setWeatherData(data))
+            .catch((error) => {
+                if (error.response.status === 404) {
+                    toast.warn('City not found', {
+                        position: "top-center",
+                    });
+                }
             })
             .then(response => response.data)
             .then(data => setWeatherData(data))
@@ -33,7 +40,7 @@ export const Home = () => {
             })
     }, [])
 
-    const handleUpdateData = useCallback(async () => {
+    const handleUpdateData = useCallback(async (city) => {
         await getPosition()
             .then((position) => {
                 latRef.current = position.coords.latitude
@@ -52,11 +59,12 @@ export const Home = () => {
 
     useEffect(() => {
         handleUpdateData()
-    }, [latRef.current, longRef.current])
+    }, [])
 
     return (
         <>
-            {weatherData ? <Weather onUpdateData={handleUpdateData} onUpdateDataByCity={handleUpdateDataByCity}
+            <ToastContainer/>
+            {weatherData ? <Weather onUpdateData={handleUpdateData}
                                     weatherData={weatherData}/> :
                 <Dimmer active>
                     <Loader>Loading..</Loader>

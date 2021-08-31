@@ -2,9 +2,9 @@ import React from "react";
 import moment from 'moment'
 import { Button } from "semantic-ui-react";
 import { Card, CardBlock, CardBody, CardElement, CardHeader, CardHeaderInput } from "./components"
-import { useState, useCallback, useEffect } from "react"
+import { useState, useEffect } from "react"
 
-export const Weather = ({weatherData, onUpdateData, onUpdateDataByCity}) => {
+export const Weather = ({weatherData, onUpdateData}) => {
 
     const [inputValue, setInputValue] = useState(weatherData.name)
 
@@ -20,8 +20,8 @@ export const Weather = ({weatherData, onUpdateData, onUpdateDataByCity}) => {
         <Card>
             <CardHeader>
                 <CardHeaderInput type='text' value={inputValue} onChange={handleInputChange}/>
-                <Button onClick={event => onUpdateDataByCity(inputValue)}>Find</Button>
-                <Button className="button" inverted color='red' circular icon='refresh' onClick={onUpdateData}/>
+                <Button onClick={event => onUpdateData(inputValue)}>Find</Button>
+                <Button className="button" inverted color='red' circular icon='refresh' onClick={event => onUpdateData(null)}/>
             </CardHeader>
             <CardBody>
                 <CardBlock>
