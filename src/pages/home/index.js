@@ -12,28 +12,43 @@ export const Home = () => {
 
     const [weatherData, setWeatherData] = useState(undefined)
 
+    const getPosition = useCallback(() => {
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject)
+        })
+    }, [])
+
     const handleUpdateDataByCity = useCallback((city) => {
-        setWeatherData(undefined)
         getWeatherByCity(city)
+            .then((response) => {
+                setWeatherData(undefined)
+                return response
+            })
             .then(response => response.data)
             .then(data => setWeatherData(data))
             .catch((error) => {
-                if(error.response.status === 404){
+                if (error.response.status === 404) {
                     handleUpdateData()
                 }
             })
     }, [])
 
-    const handleUpdateData = useCallback(() => {
-        setWeatherData(undefined)
-        navigator.geolocation.getCurrentPosition((pos) => {
-            latRef.current = pos.coords.latitude
-            longRef.current = pos.coords.longitude
-        })
-        getWeather(latRef.current, longRef.current)
+    const handleUpdateData = useCallback(async () => {
+        await getPosition()
+            .then((position) => {
+                latRef.current = position.coords.latitude
+                longRef.current = position.coords.longitude
+            })
+            .catch((err) => {
+                toast.error(err, {
+                    position: "top-center",
+                });
+            })
+        await getWeather(latRef.current, longRef.current)
             .then(response => response.data)
             .then(data => setWeatherData(data))
-    }, [])
+    }, [getPosition])
+
 
     useEffect(() => {
         handleUpdateData()

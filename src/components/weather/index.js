@@ -1,8 +1,8 @@
 import React from "react";
-import {Button} from "semantic-ui-react";
 import moment from 'moment'
-import {Card, CardBlock, CardBody, CardElement, CardHeader, CardHeaderInput} from "./components"
-import {useState} from "react"
+import { Button } from "semantic-ui-react";
+import { Card, CardBlock, CardBody, CardElement, CardHeader, CardHeaderInput } from "./components"
+import { useState, useCallback, useEffect } from "react"
 
 export const Weather = ({weatherData, onUpdateData, onUpdateDataByCity}) => {
 
@@ -11,6 +11,11 @@ export const Weather = ({weatherData, onUpdateData, onUpdateDataByCity}) => {
     const handleInputChange = (e) => {
         setInputValue(e.currentTarget.value)
     }
+
+    useEffect(() => {
+        setInputValue(weatherData.name)
+    },[weatherData])
+
     return (
         <Card>
             <CardHeader>
