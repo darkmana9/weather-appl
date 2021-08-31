@@ -3,9 +3,10 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { Dimmer, Loader } from "semantic-ui-react";
 import { toast, ToastContainer } from "react-toastify";
 
-import {getWeather, getWeatherByCity} from '../../API'
-import {Weather} from "../../components/weather";
-import {Dimmer, Loader} from "semantic-ui-react";
+import { getWeather } from '../../API'
+import { Weather } from "../../components/weather";
+
+import 'react-toastify/dist/ReactToastify.css'
 
 export const Home = () => {
 
@@ -31,13 +32,6 @@ export const Home = () => {
                     });
                 }
             })
-            .then(response => response.data)
-            .then(data => setWeatherData(data))
-            .catch((error) => {
-                if (error.response.status === 404) {
-                    handleUpdateData()
-                }
-            })
     }, [])
 
     const handleUpdateData = useCallback(async (city) => {
@@ -51,15 +45,20 @@ export const Home = () => {
                     position: "top-center",
                 });
             })
-        await getWeather(latRef.current, longRef.current)
-            .then(response => response.data)
-            .then(data => setWeatherData(data))
-    }, [getPosition])
+        await toast.promise(
+            setWeather(latRef.current, longRef.current, city),
+            {
+                pending: 'Getting data...',
+                success: 'Data received 👌',
+                error: 'Something wrong'
+            }
+        )
+    }, [getPosition, setWeather])
 
 
     useEffect(() => {
         handleUpdateData()
-    }, [])
+    }, [handleUpdateData])
 
     return (
         <>
