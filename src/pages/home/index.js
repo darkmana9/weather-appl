@@ -2,11 +2,10 @@ import React from 'react'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Dimmer, Loader } from "semantic-ui-react";
 import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css'
 
 import { getWeather } from '../../API'
 import { Weather } from "../../components/weather";
-
-import 'react-toastify/dist/ReactToastify.css'
 
 export const Home = () => {
 
